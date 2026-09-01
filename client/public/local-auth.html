@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل الدخول - نظام العيادة</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            padding: 40px;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .logo {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #999;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+            font-family: inherit;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        input:invalid {
+            border-color: #f56565;
+        }
+
+        .button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 10px;
+        }
+
+        .button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .button:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        .button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .demo-info {
+            background: #f0f4ff;
+            border-left: 4px solid #667eea;
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            color: #333;
+        }
+
+        .demo-info strong {
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .demo-info code {
+            background: white;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            color: #764ba2;
+        }
+
+        .error {
+            background: #fee;
+            border: 1px solid #fcc;
+            color: #c33;
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            display: none;
+            font-size: 14px;
+        }
+
+        .error.show {
+            display: block;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 12px;
+            color: #999;
+        }
+
+        .footer a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">🏥</div>
+            <h1>نظام إدارة العيادة</h1>
+            <p class="subtitle">تسجيل الدخول للنظام المحلي</p>
+            <span class="status">🔒 وضع محلي (بدون انترنت)</span>
+        </div>
+
+        <div class="demo-info">
+            <strong>🔑 بيانات تسجيل الدخول (تجريبية):</strong>
+            اسم المستخدم: <code>admin</code><br>
+            كلمة السر: <code>123456</code>
+        </div>
+
+        <div class="error" id="error-message"></div>
+
+        <form id="login-form">
+            <div class="form-group">
+                <label for="email">اسم المستخدم أو البريد الإلكتروني</label>
+                <input
+                    type="text"
+                    id="email"
+                    name="email"
+                    required
+                    placeholder="admin"
+                    autocomplete="username"
+                />
+            </div>
+
+            <div class="form-group">
+                <label for="password">كلمة السر</label>
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    required
+                    placeholder="••••••"
+                    autocomplete="current-password"
+                />
+            </div>
+
+            <button type="submit" class="button" id="submit-btn">
+                تسجيل الدخول
+            </button>
+        </form>
+
+        <div class="footer">
+            <p>هذا النظام يعمل بدون اتصال بالإنترنت</p>
+            <p>جميع البيانات محفوظة محليًا على جهازك</p>
+        </div>
+    </div>
+
+    <script>
+        // محاكاة قاعدة البيانات المحلية
+        const DEFAULT_CREDENTIALS = {
+            email: 'admin',
+            password: '123456'
+        };
+
+        const form = document.getElementById('login-form');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const errorMessage = document.getElementById('error-message');
+        const submitBtn = document.getElementById('submit-btn');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            errorMessage.classList.remove('show');
+
+            const email = emailInput.value.trim();
+            const password = passwordInput.value;
+
+            if (!email || !password) {
+                showError('يرجى ملء جميع الحقول');
+                return;
+            }
+
+            // إظهار حالة التحميل
+            const originalText = submitBtn.textContent;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="loading-spinner"></span> جاري التحقق...';
+
+            // محاكاة التأخير (مثل طلب حقيقي)
+            await new Promise(resolve => setTimeout(resolve, 500));
+
+            // التحقق من بيانات المستخدم
+            if (email === DEFAULT_CREDENTIALS.email && password === DEFAULT_CREDENTIALS.password) {
+                // حفظ جلسة العمل
+                localStorage.setItem('authToken', 'local-' + Date.now());
+                localStorage.setItem('currentUser', JSON.stringify({
+                    id: 'admin-001',
+                    email: email,
+                    name: 'مدير النظام',
+                    role: 'admin'
+                }));
+
+                // الانتقال إلى التطبيق الرئيسي
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 1000);
+            } else {
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
+                showError('بيانات تسجيل الدخول غير صحيحة');
+                passwordInput.value = '';
+                passwordInput.focus();
+            }
+        });
+
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.classList.add('show');
+        }
+
+        // ملء تلقائي ببيانات التجربة إذا كان المستخدم يضغط "تسجيل الدخول" فارغاً
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !emailInput.value && !passwordInput.value) {
+                emailInput.value = DEFAULT_CREDENTIALS.email;
+                passwordInput.value = DEFAULT_CREDENTIALS.password;
+            }
+        });
+    </script>
+</body>
+</html>
