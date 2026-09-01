@@ -145,3 +145,44 @@ export function getAllLocalUsers(): Omit<LocalUser, "passwordHash">[] {
 export function resetToDefaultUsers(): void {
   users = [...DEFAULT_USERS];
 }
+
+
+
+
+
+/**
+ * تخزين الجلسات النشطة (token -> بيانات المستخدم)
+ * في الذاكرة فقط - تُمسح عند إعادة تشغيل السيرفر
+ */
+const activeSessions = new Map<string, LocalAuthSession>();
+
+// نحفظ التوكن مع كل جلسة تسجيل دخول ناجحة
+const originalLoginLocal = loginLocal;
+export function loginLocalWithSession(email: string, password: string): LocalAuthSession | null {
+  const session = originalLoginLocal(email, password);
+  if (session) {
+    activeSessions.set(session.token, session);
+  }
+  return session;
+}
+
+/**
+ * التحقق من صلاحية التوكن (يُستخدم في كل طلب محمي)
+ */
+export function verifyLocalToken(token: string | undefined | null): LocalAuthSession | null {
+  if (!token) return null;
+  const session = activeSessions.get(token);
+  if (!session) return null;
+  if (Date.now() > session.expiresAt) {
+    activeSessions.delete(token);
+    return null;
+  }
+  return session;
+}
+
+/**
+ * تسجيل الخروج (إبطال التوكن)
+ */
+export function logoutLocal(token: string): void {
+  activeSessions.delete(token);
+}
